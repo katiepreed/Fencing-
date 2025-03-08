@@ -1,7 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
+import RefPage from "./RefPage";
+import { Route, Routes, Link, useNavigate } from "react-router-dom";
+import { useTable } from "react-table";
 
 /*
 
@@ -31,11 +34,20 @@ TO DO:
 */
 
 function App() {
-  /*
-  const [dataTeam, setDataTeam] = useState([
-    { id: 1, awayNumber: 1, nameHome: "", homeTeamScore: 0, matchScore: 0, awayTeamScore: 5, awayName: "Bob", awayNumber: 3},
-  ]);
-  */
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/refPage" element={<RefPage />} />
+    </Routes>
+  );
+}
+
+function HomePage() {
+  const navigate = useNavigate();
+
+  const handleClick = (matchID) => {
+    navigate("/refPage", { matchID: { matchID } });
+  };
 
   const [dataTeam, setDataTeam] = useState([
     {
@@ -67,16 +79,147 @@ function App() {
   const team1 = dataTeam.slice(0, 3);
   const team2 = dataTeam.slice(3, 6);
 
+  const data = React.useMemo(
+    () => [
+      {
+        homeNumber: 3,
+        homeName: dataTeam[2].name,
+        homeTeamScore: 0,
+        matchScore: <button onClick={handleClick}>Go to Page 2</button>,
+        awayTeamScore: 0,
+        awayName: dataTeam[5].name,
+        awayNumber: 6,
+      },
+      {
+        homeNumber: 1,
+        homeName: dataTeam[0].name,
+        homeTeamScore: 0,
+        matchScore: "calculate me",
+        awayTeamScore: 0,
+        awayName: dataTeam[4].name,
+        awayNumber: 5,
+      },
+      {
+        homeNumber: 2,
+        homeName: dataTeam[1].name,
+        homeTeamScore: 0,
+        matchScore: "calculate me",
+        awayTeamScore: 0,
+        awayName: dataTeam[3].name,
+        awayNumber: 4,
+      },
+      {
+        homeNumber: 1,
+        homeName: dataTeam[0].name,
+        homeTeamScore: 0,
+        matchScore: "calculate me",
+        awayTeamScore: 0,
+        awayName: dataTeam[5].name,
+        awayNumber: 6,
+      },
+      {
+        homeNumber: 3,
+        homeName: dataTeam[2].name,
+        homeTeamScore: 0,
+        matchScore: "calculate me",
+        awayTeamScore: 0,
+        awayName: dataTeam[3].name,
+        awayNumber: 4,
+      },
+      {
+        homeNumber: 2,
+        homeName: dataTeam[1].name,
+        homeTeamScore: 0,
+        matchScore: "calculate me",
+        awayTeamScore: 0,
+        awayName: dataTeam[4].name,
+        awayNumber: 5,
+      },
+      {
+        homeNumber: 1,
+        homeName: dataTeam[0].name,
+        homeTeamScore: 0,
+        matchScore: "calculate me",
+        awayTeamScore: 0,
+        awayName: dataTeam[3].name,
+        awayNumber: 4,
+      },
+      {
+        homeNumber: 2,
+        homeName: dataTeam[1].name,
+        homeTeamScore: 0,
+        matchScore: "calculate me",
+        awayTeamScore: 0,
+        awayName: dataTeam[5].name,
+        awayNumber: 6,
+      },
+      {
+        homeNumber: 3,
+        homeName: dataTeam[2].name,
+        homeTeamScore: 0,
+        matchScore: "calculate me",
+        awayTeamScore: 0,
+        awayName: dataTeam[4].name,
+        awayNumber: 5,
+      },
+    ],
+    [dataTeam]
+  );
+
   const handleInputChangeTeam = (id, value) => {
     setDataTeam((prevData) =>
       prevData.map((row) => (row.id === id ? { ...row, name: value } : row))
     );
   };
 
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "Number",
+        accessor: "homeNumber",
+      },
+      {
+        Header: "Name",
+        accessor: "homeName",
+      },
+      {
+        Header: "Home Team Score",
+        accessor: "homeTeamScore",
+      },
+      {
+        Header: "Match Score",
+        accessor: "matchScore",
+      },
+      {
+        Header: "Away Team Score",
+        accessor: "awayTeamScore",
+      },
+      {
+        Header: "Name",
+        accessor: "awayName",
+      },
+      {
+        Header: "Number",
+        accessor: "awayNumber",
+      },
+    ],
+    []
+  );
+
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable({
+      columns,
+      data,
+    });
+
   return (
-    <>
-      <div className="tables">
-        <table border="1" cellPadding="10">
+    <div className="app-container">
+      <header className="app-header">
+        <h1 className="app-title">Fencing Tournament Manager</h1>
+        <p className="app-subtitle">Track matches, scores, and timing</p>
+      </header>
+      <div className="tables-container">
+        <table border="1" cellPadding="10" className="team-table">
           <thead>
             <tr>
               <th>Number</th>
@@ -100,7 +243,7 @@ function App() {
             ))}
           </tbody>
         </table>
-        <table border="1" cellPadding="10">
+        <table border="1" cellPadding="10" className="team-table">
           <thead>
             <tr>
               <th>Number</th>
@@ -125,7 +268,49 @@ function App() {
           </tbody>
         </table>
       </div>
-    </>
+      <div className="match-table-container">
+        {/* Wrapper div to center the table */}
+        <table {...getTableProps()} className="match-table">
+          <thead>
+            {headerGroups.map((headerGroup) => (
+              <tr
+                {...headerGroup.getHeaderGroupProps()}
+                className="bg-blue-500 text-white"
+              >
+                {headerGroup.headers.map((column) => (
+                  <th
+                    {...column.getHeaderProps()}
+                    className="p-3 border-b-2 border-gray-200"
+                  >
+                    {column.render("Header")}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {rows.map((row, i) => {
+              prepareRow(row);
+              return (
+                <tr
+                  {...row.getRowProps()}
+                  className={`border-b border-gray-300 ${
+                    i % 2 === 0 ? "bg-gray-100" : "bg-white"
+                  } hover:bg-blue-100 transition`}
+                  key={i}
+                >
+                  {row.cells.map((cell) => (
+                    <td {...cell.getCellProps()} className="p-3 text-center">
+                      {cell.render("Cell")}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 
