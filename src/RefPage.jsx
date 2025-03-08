@@ -68,8 +68,8 @@ const RefPage = () => {
           }}
           onClick={() => {
             // Handle the finish bout logic here
-            matchData.homeTeamScore = homeScore;
-            matchData.awayTeamScore = awayScore;
+            matchData.homeTeamScore += homeScore;
+            matchData.awayTeamScore += awayScore;
             matchData.matchStatus = "finished";
             navigate("/refPage", { state: { matchData: matchData } });
           }}
