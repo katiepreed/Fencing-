@@ -1,33 +1,22 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; // Add useState import
 
 // Importing fencer images
 import fencerLeft from "./images/fencer-left.png"; // Adjust path as needed
 import fencerRight from "./images/fencer-right.png"; // Adjust path as needed
 
-const ScoreBoard = ({ title }) => {
-  const [score, setScore] = useState(0);
-  const [animation, setAnimation] = useState(false);
+const ScoreBoard = ({ fencer, title, score, increaseScore, decreaseScore }) => {
+  const [animation, setAnimation] = useState(false); // State for animation
 
-  // Function to increase score
-  const increaseScore = () => {
-    setScore(score + 1);
-    // Trigger animation
+  // Function to trigger score animation
+  const triggerAnimation = () => {
     setAnimation(true);
-
-    // Set a timeout to hide the animation after 2 seconds
     setTimeout(() => {
       setAnimation(false);
-    }, 2000); // 2 seconds for the fencers to disappear
-  };
-
-  // Function to decrease score
-  const decreaseScore = () => {
-    setScore(score - 1);
-    setAnimation(false);
+    }, 2000); // Animation lasts 2 seconds
   };
 
   // Determine which fencer image to show
-  const fencerImage = title === "Fencer 1" ? fencerLeft : fencerRight;
+  const fencerImage = fencer === "Home" ? fencerLeft : fencerRight;
 
   return (
     <div
@@ -67,13 +56,19 @@ const ScoreBoard = ({ title }) => {
       <div style={{ fontSize: "3rem", fontWeight: "bold", color: "#333" }}>{score}</div>
       <div style={{ marginTop: "10px" }}>
         <button
-          onClick={increaseScore}
+          onClick={() => {
+            increaseScore(); // Update score for Fencer 1 or Fencer 2
+            triggerAnimation(); // Trigger animation when score increases
+          }}
           style={buttonStyles("#4A90E2", false)} // Keep "Add Point" normal size
         >
           Add Point
         </button>
         <button
-          onClick={decreaseScore}
+          onClick={() => {
+            decreaseScore(); // Update score for Fencer 1 or Fencer 2
+            triggerAnimation(); // Trigger animation when score decreases
+          }}
           style={buttonStyles("#B0B0B0", true)} // Smaller height for "Remove Point"
         >
           Remove Point
