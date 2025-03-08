@@ -5,6 +5,12 @@
   text-align: center;
 }
 
+.tables {
+  display: flex;
+  flex-direction: row;
+  width: 85vw;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
