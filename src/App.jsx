@@ -31,27 +31,45 @@ TO DO:
 */
 
 function App() {
-  const [dataTeam1, setDataTeam1] = useState([
-    { id: 1, predefined: "Row 1", input: "" },
-    { id: 2, predefined: "Row 2", input: "" },
-    { id: 3, predefined: "Row 3", input: "" },
+  /*
+  const [dataTeam, setDataTeam] = useState([
+    { id: 1, awayNumber: 1, nameHome: "", homeTeamScore: 0, matchScore: 0, awayTeamScore: 5, awayName: "Bob", awayNumber: 3},
+  ]);
+  */
+
+  const [dataTeam, setDataTeam] = useState([
+    {
+      id: 1,
+      name: "",
+    },
+    {
+      id: 2,
+      name: "",
+    },
+    {
+      id: 3,
+      name: "",
+    },
+    {
+      id: 4,
+      name: "",
+    },
+    {
+      id: 5,
+      name: "",
+    },
+    {
+      id: 6,
+      name: "",
+    },
   ]);
 
-  const [dataTeam2, setDataTeam2] = useState([
-    { id: 1, predefined: "Row 1", input: "" },
-    { id: 2, predefined: "Row 2", input: "" },
-    { id: 3, predefined: "Row 3", input: "" },
-  ]);
+  const team1 = dataTeam.slice(0, 3);
+  const team2 = dataTeam.slice(3, 6);
 
-  const handleInputChangeTeam1 = (id, value) => {
-    setDataTeam1((prevData) =>
-      prevData.map((row) => (row.id === id ? { ...row, input: value } : row))
-    );
-  };
-
-  const handleInputChangeTeam2 = (id, value) => {
-    setDataTeam2((prevData) =>
-      prevData.map((row) => (row.id === id ? { ...row, input: value } : row))
+  const handleInputChangeTeam = (id, value) => {
+    setDataTeam((prevData) =>
+      prevData.map((row) => (row.id === id ? { ...row, name: value } : row))
     );
   };
 
@@ -61,20 +79,20 @@ function App() {
         <table border="1" cellPadding="10">
           <thead>
             <tr>
-              <th>Predefined Column</th>
-              <th>Input Column</th>
+              <th>Number</th>
+              <th>Name</th>
             </tr>
           </thead>
           <tbody>
-            {dataTeam1.map((row) => (
+            {team1.map((row) => (
               <tr key={row.id}>
-                <td>{row.predefined}</td>
+                <td>{row.id}</td>
                 <td>
                   <input
                     type="text"
                     value={row.input}
                     onChange={(e) =>
-                      handleInputChangeTeam1(row.id, e.target.value)
+                      handleInputChangeTeam(row.id, e.target.value)
                     }
                   />
                 </td>
@@ -85,20 +103,20 @@ function App() {
         <table border="1" cellPadding="10">
           <thead>
             <tr>
-              <th>Predefined Column</th>
-              <th>Input Column</th>
+              <th>Number</th>
+              <th>Name</th>
             </tr>
           </thead>
           <tbody>
-            {dataTeam2.map((row) => (
+            {team2.map((row) => (
               <tr key={row.id}>
-                <td>{row.predefined}</td>
+                <td>{row.id}</td>
                 <td>
                   <input
                     type="text"
                     value={row.input}
                     onChange={(e) =>
-                      handleInputChangeTeam2(row.id, e.target.value)
+                      handleInputChangeTeam(row.id, e.target.value)
                     }
                   />
                 </td>
