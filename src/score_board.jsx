@@ -35,7 +35,7 @@ const ScoreBoard = ({ fencer, title, score, increaseScore, decreaseScore }) => {
         style={{
           position: "absolute",
           top: "-40px",
-          left: title === "Fencer 1" ? "-50px" : "150px", // Position for Fencer 1 or 2
+          left: title === "Fencer 1" ? "-50px" : "50px", // Adjust positioning logic
           transition: "all 0.5s ease",
           opacity: animation ? 1 : 0, // Control opacity based on animation state
           transform: animation ? "scale(1)" : "scale(0)", // Apply scaling for animation
@@ -45,7 +45,7 @@ const ScoreBoard = ({ fencer, title, score, increaseScore, decreaseScore }) => {
           src={fencerImage}
           alt={title}
           style={{
-            width: "150px",  // Increase the size of the fencer image (adjust as needed)
+            width: "150px",  // Adjust the size of the fencer image
             height: "auto",  // Maintain the aspect ratio
             animation: animation ? "bounce 0.5s ease-out" : "none",
           }}
