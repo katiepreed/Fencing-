@@ -45,10 +45,6 @@ function App() {
 function HomePage() {
   const navigate = useNavigate();
 
-  const handleClick = (matchID) => {
-    navigate("/refPage", { matchID: { matchID } });
-  };
-
   const [dataTeam, setDataTeam] = useState([
     {
       id: 1,
@@ -166,7 +162,7 @@ function HomePage() {
         homeNumber: 3,
         homeName: dataTeam[2].name,
         homeTeamScore: 0,
-        matchScore: <button id={9} onClick={handleClick(9)}>Start</button>,
+        matchScore: <button onClick={() => handleClick(9)}>Start</button>,
         awayTeamScore: 0,
         awayName: dataTeam[4].name,
         awayNumber: 5,
@@ -174,6 +170,13 @@ function HomePage() {
     ],
     [dataTeam]
   );
+
+  const handleClick = (matchID) => {
+    const matchData = data.find(match => match.matchID === matchID);
+    matchData.matchScore = "";
+    console.log(matchData);
+    navigate("/refPage", { state: { matchData } });
+  };
 
   const handleInputChangeTeam = (id, value) => {
     setDataTeam((prevData) =>
@@ -243,9 +246,7 @@ function HomePage() {
                   <input
                     type="text"
                     value={row.input}
-                    onChange={(e) =>
-                      handleInputChangeTeam(row.id, e.target.value)
-                    }
+                    onChange={(e) => handleInputChangeTeam(row.id, e.target.value)}
                   />
                 </td>
               </tr>
@@ -267,9 +268,7 @@ function HomePage() {
                   <input
                     type="text"
                     value={row.input}
-                    onChange={(e) =>
-                      handleInputChangeTeam(row.id, e.target.value)
-                    }
+                    onChange={(e) => handleInputChangeTeam(row.id, e.target.value)}
                   />
                 </td>
               </tr>
