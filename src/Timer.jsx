@@ -76,12 +76,10 @@ const CountdownTimer = () => {
     }
   };
 
-  const resetTimer = () => {
-    setIsRunning(false);
+  const backButtonHandler = () => {
     setTimerState("setup");
-    setInputMinutes(minutes);
-    setInputSeconds(seconds);
-    setTimeRemaining(totalTime); // Reset to the initial time
+    setTimeRemaining(totalTime);
+    setIsRunning(false);
   };
 
   const progressBarPercentage = (timeRemaining / totalTime) * 100;
@@ -153,15 +151,12 @@ const CountdownTimer = () => {
           <div style={{ marginTop: "20px" }}>
             <button
               onClick={toggleTimer}
-              style={buttonStyles(isRunning ? colors.darkYellow : colors.green)}
+              style={buttonStyles(
+                isRunning ? colors.darkYellow : colors.green,
+                "pause"
+              )}
             >
               {isRunning ? "Pause" : "Start"}
-            </button>
-            <button
-              onClick={resetTimer}
-              style={{ ...resetButtonStyles, marginLeft: "20px" }}
-            >
-              Reset
             </button>
           </div>
           <div
@@ -186,6 +181,25 @@ const CountdownTimer = () => {
               }}
             />
           </div>
+          {/* Back button showing when timer is running */}
+          {timerState === "running" && (
+            <div
+              style={{
+                position: "absolute",
+                top: "10px",
+                left: "10px",
+                background: "none",
+                border: "none",
+                color: colors.darkText,
+                fontSize: "2rem",
+                cursor: "pointer",
+                display: "block", // Show the button only when the timer is running
+              }}
+              onClick={backButtonHandler}
+            >
+              &lt;
+            </div>
+          )}
         </>
       )}
     </div>
@@ -205,12 +219,12 @@ const inputStyles = {
   margin: "5px",
 };
 
-const buttonStyles = (bgColor) => ({
+const buttonStyles = (bgColor, type) => ({
   backgroundColor: bgColor,
   color: colors.white,
   border: "none",
   borderRadius: "5px",
-  padding: "15px",
+  padding: type === "pause" ? "20px 40px" : "15px 30px", // Pause button is bigger
   fontSize: "18px",
   fontWeight: "bold",
   cursor: "pointer",
@@ -218,20 +232,5 @@ const buttonStyles = (bgColor) => ({
   transition: "all 0.2s ease",
   marginTop: "10px",
 });
-
-const resetButtonStyles = {
-  backgroundColor: colors.primary,
-  color: colors.white,
-  border: "none",
-  borderRadius: "5px",
-  padding: "15px",
-  fontSize: "18px",
-  fontWeight: "bold",
-  cursor: "pointer",
-  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  transition: "all 0.2s ease",
-  marginTop: "10px",
-  width: "150px", // Increased width for reset button
-};
 
 export default CountdownTimer;
