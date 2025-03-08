@@ -96,7 +96,7 @@ function HomePage() {
         homeNumber: 1,
         homeName: dataTeam[0].name,
         homeTeamScore: 0,
-        matchScore: <button onClick={() => handleClick(2)}>Start</button>,        
+        matchScore: <button onClick={() => handleClick(2)}>Start</button>,
         awayTeamScore: 0,
         awayName: dataTeam[4].name,
         awayNumber: 5,
@@ -166,7 +166,11 @@ function HomePage() {
         homeNumber: 3,
         homeName: dataTeam[2].name,
         homeTeamScore: 0,
-        matchScore: <button id={9} onClick={handleClick(9)}>Start</button>,
+        matchScore: (
+          <button id={9} onClick={() => handleClick(9)}>
+            Start
+          </button>
+        ),
         awayTeamScore: 0,
         awayName: dataTeam[4].name,
         awayNumber: 5,

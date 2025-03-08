@@ -88,7 +88,7 @@ body {
 }
 
 .team-table td {
-  padding: 0;
+  padding: 0; /* Already set to 0, which is good */
   border-bottom: 1px solid var(--border-color);
   height: 100%;
   vertical-align: middle;
@@ -110,17 +110,28 @@ body {
 .team-table input[type="text"] {
   width: 100%;
   height: 100%;
-  padding: 0.75rem 1rem;
+  padding: 1rem 1rem;
   border: none;
   font-size: 1rem;
   box-sizing: border-box;
   background-color: transparent;
+  margin: 0; /* Add this to ensure no margin */
+  display: block; /* Add this to make input fill the cell completely */
 }
 
 .team-table input[type="text"]:focus {
   outline: none;
   background-color: rgba(43, 108, 176, 0.05);
   box-shadow: inset 0 0 0 2px var(--primary-color);
+}
+
+/* Optionally, you can also add these styles for a more seamless look */
+.team-table tr {
+  height: 48px; /* Set a consistent height for all rows */
+}
+
+.team-table tbody {
+  border-collapse: collapse;
 }
 
 /* Match Table Styling */
