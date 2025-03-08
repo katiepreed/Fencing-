@@ -91,7 +91,7 @@ const CountdownTimer = () => {
         color: colors.white,
         fontFamily: "Arial, sans-serif",
         textAlign: "center",
-        padding: "30px",
+        padding: "85px",
         borderRadius: "10px",
         width: "350px",
         margin: "auto",
