@@ -2,17 +2,17 @@ import React, { useState, useEffect } from "react";
 
 // Define color palette
 const colors = {
-  background: '#FFFFFF',  // White background
-  accent: '#4A90E2',      // Blue accent color
-  primary: '#4F5D75',     // Soft blue for the timer
-  light: '#BFC0C0',       // Light grey
-  white: '#FFFFFF',       // White
-  green: '#4CAF50',       // Green for the start button
-  yellow: '#FFC107',      // Yellow for progress bar warning
-  red: '#F44336',         // Red for the last 10 seconds
-  darkBlue: '#1A1C3C',     // Dark, almost black blue for the title
-  darkText: '#333333',     // Dark gray for the timer text
-  darkYellow: '#FF9800'    // Darker yellow when pause is clicked
+  background: "#FFFFFF", // White background
+  accent: "#4A90E2", // Blue accent color
+  primary: "#4F5D75", // Soft blue for the timer
+  light: "#BFC0C0", // Light grey
+  white: "#FFFFFF", // White
+  green: "#4CAF50", // Green for the start button
+  yellow: "#FFC107", // Yellow for progress bar warning
+  red: "#F44336", // Red for the last 10 seconds
+  darkBlue: "#1A1C3C", // Dark, almost black blue for the title
+  darkText: "#333333", // Dark gray for the timer text
+  darkYellow: "#FF9800", // Darker yellow when pause is clicked
 };
 
 const CountdownTimer = () => {
@@ -54,7 +54,7 @@ const CountdownTimer = () => {
   };
 
   const validateInput = (value) => {
-    const numericValue = value.replace(/[^0-9]/g, '');
+    const numericValue = value.replace(/[^0-9]/g, "");
     return numericValue.slice(0, 2);
   };
 
@@ -98,7 +98,14 @@ const CountdownTimer = () => {
         boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <h1 style={{ color: colors.darkBlue, fontSize: "2.5rem", marginBottom: "20px", fontWeight: "bold" }}>
+      <h1
+        style={{
+          color: colors.darkBlue,
+          fontSize: "2.5rem",
+          marginBottom: "20px",
+          fontWeight: "bold",
+        }}
+      >
         Countdown Timer
       </h1>
       {timerState === "setup" ? (
@@ -110,7 +117,15 @@ const CountdownTimer = () => {
               onChange={(e) => setInputMinutes(validateInput(e.target.value))}
               style={inputStyles}
             />
-            <span style={{ fontSize: "3rem", fontWeight: "bold", color: colors.darkText }}>:</span>
+            <span
+              style={{
+                fontSize: "3rem",
+                fontWeight: "bold",
+                color: colors.darkText,
+              }}
+            >
+              :
+            </span>
             <input
               type="text"
               value={inputSeconds}
@@ -124,13 +139,22 @@ const CountdownTimer = () => {
         </>
       ) : (
         <>
-          <div style={{ fontSize: "3rem", fontWeight: "bold", color: colors.darkText }}>
+          <div
+            style={{
+              fontSize: "3rem",
+              fontWeight: "bold",
+              color: colors.darkText,
+            }}
+          >
             {formatTime(timeRemaining)}
           </div>
           <div style={{ marginTop: "20px" }}>
             <button
               onClick={toggleTimer}
-              style={buttonStyles(isRunning ? colors.darkYellow : colors.green, "pause")}
+              style={buttonStyles(
+                isRunning ? colors.darkYellow : colors.green,
+                "pause"
+              )}
             >
               {isRunning ? "Pause" : "Start"}
             </button>
@@ -187,10 +211,10 @@ const inputStyles = {
   width: "60px",
   height: "50px",
   textAlign: "center",
-  fontSize: "3rem",   // Same font size as countdown
+  fontSize: "3rem", // Same font size as countdown
   fontWeight: "bold", // Bold text to match countdown
-  backgroundColor: colors.background,  // Remove the background color
-  color: colors.darkText,  // Dark gray text color for visibility
+  backgroundColor: colors.background, // Remove the background color
+  color: colors.darkText, // Dark gray text color for visibility
   border: "none",
   margin: "5px",
 };
