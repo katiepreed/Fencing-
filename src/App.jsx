@@ -1,37 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import RefPage from "./RefPage";
 import { Route, Routes, Link, useNavigate } from "react-router-dom";
 import { useTable } from "react-table";
-
-/*
-
-1. A set of order of matches 
-2. Table is always populated in the same way (via the fencer number)
-3. Order is done via the number associated to fencer 
-
-
-TO DO:
-
-1. Assign name to number via input
-  - render via table (that is populated from input)
-
-2. A new page for:
-
- - Timer (start / stop)
- - score for each player 
- - populate new page from button in table that provides names of player for that row. 
-
-2. Info for table:
-  - number (team 1)
-  - name (team 1)
-  - team score (column for each score e.g. (2: 5)
-  - number (team 2)
-  - name (team 2)
-
-*/
 
 function App() {
   return (
@@ -45,44 +18,43 @@ function App() {
 function HomePage() {
   const navigate = useNavigate();
 
-  const [dataTeam, setDataTeam] = useState([
-    {
-      id: 1,
-      name: "",
-    },
-    {
-      id: 2,
-      name: "",
-    },
-    {
-      id: 3,
-      name: "",
-    },
-    {
-      id: 4,
-      name: "",
-    },
-    {
-      id: 5,
-      name: "",
-    },
-    {
-      id: 6,
-      name: "",
-    },
-  ]);
+  // Load team data from localStorage or use default empty values
+  const [dataTeam, setDataTeam] = useState(() => {
+    const savedTeams = localStorage.getItem("fencingTeams");
+    if (savedTeams) {
+      return JSON.parse(savedTeams);
+    }
+    return [
+      { id: 1, name: "" },
+      { id: 2, name: "" },
+      { id: 3, name: "" },
+      { id: 4, name: "" },
+      { id: 5, name: "" },
+      { id: 6, name: "" },
+    ];
+  });
+
+  // Save team data whenever it changes
+  useEffect(() => {
+    localStorage.setItem("fencingTeams", JSON.stringify(dataTeam));
+  }, [dataTeam]);
 
   const team1 = dataTeam.slice(0, 3);
   const team2 = dataTeam.slice(3, 6);
 
-  const data = React.useMemo(
-    () => [
+  // Store match data with matchStatus instead of React components
+  const [matchData, setMatchData] = useState(() => {
+    const savedMatches = localStorage.getItem("fencingMatches");
+    if (savedMatches) {
+      return JSON.parse(savedMatches);
+    }
+    return [
       {
         matchID: 1,
         homeNumber: 3,
         homeName: dataTeam[2].name,
         homeTeamScore: 0,
-        matchScore: <button onClick={() => handleClick(1)}>Start</button>,
+        matchStatus: "notStarted",
         awayTeamScore: 0,
         awayName: dataTeam[5].name,
         awayNumber: 6,
@@ -92,7 +64,7 @@ function HomePage() {
         homeNumber: 1,
         homeName: dataTeam[0].name,
         homeTeamScore: 0,
-        matchScore: <button onClick={() => handleClick(2)}>Start</button>,
+        matchStatus: "notStarted",
         awayTeamScore: 0,
         awayName: dataTeam[4].name,
         awayNumber: 5,
@@ -102,7 +74,7 @@ function HomePage() {
         homeNumber: 2,
         homeName: dataTeam[1].name,
         homeTeamScore: 0,
-        matchScore: <button onClick={() => handleClick(3)}>Start</button>,
+        matchStatus: "notStarted",
         awayTeamScore: 0,
         awayName: dataTeam[3].name,
         awayNumber: 4,
@@ -112,7 +84,7 @@ function HomePage() {
         homeNumber: 1,
         homeName: dataTeam[0].name,
         homeTeamScore: 0,
-        matchScore: <button onClick={() => handleClick(4)}>Start</button>,
+        matchStatus: "notStarted",
         awayTeamScore: 0,
         awayName: dataTeam[5].name,
         awayNumber: 6,
@@ -122,7 +94,7 @@ function HomePage() {
         homeNumber: 3,
         homeName: dataTeam[2].name,
         homeTeamScore: 0,
-        matchScore: <button onClick={() => handleClick(5)}>Start</button>,
+        matchStatus: "notStarted",
         awayTeamScore: 0,
         awayName: dataTeam[3].name,
         awayNumber: 4,
@@ -132,7 +104,7 @@ function HomePage() {
         homeNumber: 2,
         homeName: dataTeam[1].name,
         homeTeamScore: 0,
-        matchScore: <button onClick={() => handleClick(6)}>Start</button>,
+        matchStatus: "notStarted",
         awayTeamScore: 0,
         awayName: dataTeam[4].name,
         awayNumber: 5,
@@ -142,7 +114,7 @@ function HomePage() {
         homeNumber: 1,
         homeName: dataTeam[0].name,
         homeTeamScore: 0,
-        matchScore: <button onClick={() => handleClick(7)}>Start</button>,
+        matchStatus: "notStarted",
         awayTeamScore: 0,
         awayName: dataTeam[3].name,
         awayNumber: 4,
@@ -152,7 +124,7 @@ function HomePage() {
         homeNumber: 2,
         homeName: dataTeam[1].name,
         homeTeamScore: 0,
-        matchScore: <button onClick={() => handleClick(8)}>Start</button>,
+        matchStatus: "notStarted",
         awayTeamScore: 0,
         awayName: dataTeam[5].name,
         awayNumber: 6,
@@ -162,20 +134,52 @@ function HomePage() {
         homeNumber: 3,
         homeName: dataTeam[2].name,
         homeTeamScore: 0,
-        matchScore: <button onClick={() => handleClick(9)}>Start</button>,
+        matchStatus: "notStarted",
         awayTeamScore: 0,
         awayName: dataTeam[4].name,
         awayNumber: 5,
       },
-    ],
-    [dataTeam]
-  );
+    ];
+  });
+
+  // Update match data when team names change
+  useEffect(() => {
+    setMatchData((prevMatches) =>
+      prevMatches.map((match) => {
+        // Find correct team names based on match numbers
+        const homeTeam = dataTeam.find((team) => team.id === match.homeNumber);
+        const awayTeam = dataTeam.find((team) => team.id === match.awayNumber);
+
+        return {
+          ...match,
+          homeName: homeTeam ? homeTeam.name : "",
+          awayName: awayTeam ? awayTeam.name : "",
+        };
+      })
+    );
+  }, [dataTeam]);
+
+  // Save match data whenever it changes
+  useEffect(() => {
+    localStorage.setItem("fencingMatches", JSON.stringify(matchData));
+  }, [matchData]);
 
   const handleClick = (matchID) => {
-    const matchData = data.find((match) => match.matchID === matchID);
-    matchData.matchScore = "";
-    console.log(matchData);
-    navigate("/refPage", { state: { matchData } });
+    // Update the match status in the local state
+    const updatedMatchData = matchData.map((match) =>
+      match.matchID === matchID
+        ? { ...match, matchStatus: "inProgress" }
+        : match
+    );
+    setMatchData(updatedMatchData);
+
+    // Find the match to navigate with
+    const matchToNavigate = matchData.find(
+      (match) => match.matchID === matchID
+    );
+
+    // Navigate to the ref page with the match data
+    navigate("/refPage", { state: { matchData: matchToNavigate } });
   };
 
   const handleInputChangeTeam = (id, value) => {
@@ -199,8 +203,17 @@ function HomePage() {
         accessor: "homeTeamScore",
       },
       {
-        Header: "Match Score",
-        accessor: "matchScore",
+        Header: "Match",
+        accessor: "matchStatus",
+        // Custom cell renderer for the match status column
+        Cell: ({ row }) =>
+          row.original.matchStatus === "notStarted" ? (
+            <button onClick={() => handleClick(row.original.matchID)}>
+              Start
+            </button>
+          ) : (
+            `${row.original.homeTeamScore} - ${row.original.awayTeamScore}`
+          ),
       },
       {
         Header: "Away Team Score",
@@ -221,7 +234,7 @@ function HomePage() {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({
       columns,
-      data,
+      data: matchData,
     });
 
   return (
@@ -245,7 +258,7 @@ function HomePage() {
                 <td>
                   <input
                     type="text"
-                    value={row.input}
+                    value={row.name}
                     onChange={(e) =>
                       handleInputChangeTeam(row.id, e.target.value)
                     }
@@ -269,7 +282,7 @@ function HomePage() {
                 <td>
                   <input
                     type="text"
-                    value={row.input}
+                    value={row.name}
                     onChange={(e) =>
                       handleInputChangeTeam(row.id, e.target.value)
                     }
@@ -281,7 +294,6 @@ function HomePage() {
         </table>
       </div>
       <div className="match-table-container">
-        {/* Wrapper div to center the table */}
         <table {...getTableProps()} className="match-table">
           <thead>
             {headerGroups.map((headerGroup) => (
