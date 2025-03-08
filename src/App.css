@@ -18,17 +18,24 @@ body {
   margin: 0;
   padding: 0;
   line-height: 1.5;
+  display: flex;
+  justify-content: center;
 }
 
 .app-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .app-header {
   text-align: center;
   margin-bottom: 2rem;
+  width: 100%;
 }
 
 .app-title {
@@ -50,6 +57,7 @@ body {
   gap: 2rem;
   margin-bottom: 2rem;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 .team-table {
@@ -60,6 +68,7 @@ body {
   width: 300px;
   border-collapse: separate;
   border-spacing: 0;
+  table-layout: fixed;
 }
 
 .team-table th {
@@ -70,9 +79,24 @@ body {
   font-weight: 600;
 }
 
+.team-table th:first-child {
+  width: 30%;
+}
+
+.team-table th:last-child {
+  width: 70%;
+}
+
 .team-table td {
-  padding: 0.75rem 1rem;
+  padding: 0;
   border-bottom: 1px solid var(--border-color);
+  height: 100%;
+  vertical-align: middle;
+}
+
+.team-table td:first-child {
+  padding: 0.75rem 1rem;
+  text-align: center;
 }
 
 .team-table tr:last-child td {
@@ -85,26 +109,32 @@ body {
 
 .team-table input[type="text"] {
   width: 100%;
-  padding: 0.5rem;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
+  height: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
   font-size: 1rem;
+  box-sizing: border-box;
+  background-color: transparent;
 }
 
 .team-table input[type="text"]:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
+  background-color: rgba(43, 108, 176, 0.05);
+  box-shadow: inset 0 0 0 2px var(--primary-color);
 }
 
 /* Match Table Styling */
 .match-table-container {
   margin: 2rem 0;
   overflow-x: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .match-table {
   width: 100%;
+  max-width: 900px;
   background: white;
   border-radius: 8px;
   overflow: hidden;
@@ -139,6 +169,13 @@ body {
   background-color: var(--hover-color);
 }
 
+/* All existing tables flex centering */
+.table-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 /* Button Styling */
 button {
   background-color: var(--primary-color);
@@ -166,6 +203,9 @@ button:focus {
   flex-direction: column;
   align-items: center;
   padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .match-info {
@@ -176,6 +216,7 @@ button:focus {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 800px;
+  text-align: center;
 }
 
 .score-container {
@@ -183,6 +224,8 @@ button:focus {
   justify-content: space-between;
   align-items: center;
   margin: 2rem 0;
+  width: 100%;
+  max-width: 800px;
 }
 
 .fencer-score {
