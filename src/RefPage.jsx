@@ -23,6 +23,30 @@ const RefPage = () => {
           <ScoreBoard title="Fencer 2" />
         </div>
       </div>
+
+      {/* Finish Bout Button */}
+      <div style={{ marginTop: "20px", width: "600px", display: "flex", justifyContent: "center" }}>
+        <button
+          style={{
+            backgroundColor: "#FF6347", // Tomato red color
+            color: "white",
+            padding: "20px 0", // Increased padding for a bigger button
+            fontSize: "18px", // Increased font size
+            fontWeight: "bold", // Thicker font weight
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            width: "87%", // Make the button as wide as the scoreboards
+            transition: "background-color 0.3s ease",
+          }}
+          onClick={() => {
+            // Handle the finish bout logic here
+            alert("Bout Finished!");
+          }}
+        >
+          Finish Bout
+        </button>
+      </div>
     </div>
   );
 };
