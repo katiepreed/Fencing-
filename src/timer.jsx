@@ -1,81 +1,103 @@
-let totalTime = 60; // Default: 60 seconds
+let totalTime = 180; // Default: 3 minutes (180 seconds)
 let timeRemaining = totalTime;
 let startTime;
 let isRunning = false;
+
+// UI Elements
 let buttonStart, buttonReset;
 let inputMinutes, inputSeconds, buttonSet;
+let scoreFencer1 = 0, scoreFencer2 = 0;
 let timerState = "setup"; // "setup" or "running"
-let progressBar;
 
 // Colors
 const colors = {
-  background: '#2D3142',
-  accent: '#EF8354',
-  primary: '#4F5D75',
-  light: '#BFC0C0',
-  white: '#FFFFFF',
-  green: '#4CAF50',
-  yellow: '#FFC107',
-  red: '#F44336'
+  background: '#000000',
+  textColor: '#FFFFFF',
+  accent: '#444444',
+  red: '#FF0000',
+  green: '#00FF00'
 };
 
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(800, 600);
   textAlign(CENTER, CENTER);
   textFont('Arial');
   
-  // Create and style input fields
-  inputMinutes = createInput('1');
-  inputMinutes.position(width/2 - 80, height/2 - 40);
+  // Create and style input fields for timer
+  inputMinutes = createInput('3');
+  inputMinutes.position(width/2 - 80, 150);
   inputMinutes.size(50, 40);
   inputMinutes.input(validateInput);
   styleInput(inputMinutes);
   
   inputSeconds = createInput('00');
-  inputSeconds.position(width/2 + 20, height/2 - 40);
+  inputSeconds.position(width/2 + 20, 150);
   inputSeconds.size(50, 40);
   inputSeconds.input(validateInput);
   styleInput(inputSeconds);
   
-  // Create minutes and seconds labels
+  // Create timer labels
   let minutesLabel = createElement('h4', 'Min');
-  minutesLabel.position(width/2 - 80, height/2 - 70);
-  minutesLabel.style('color', colors.light);
-  minutesLabel.style('font-family', 'Arial, sans-serif');
+  minutesLabel.position(width/2 - 80, 120);
+  styleLabel(minutesLabel);
   
   let secondsLabel = createElement('h4', 'Sec');
-  secondsLabel.position(width/2 + 20, height/2 - 70);
-  secondsLabel.style('color', colors.light);
-  secondsLabel.style('font-family', 'Arial, sans-serif');
+  secondsLabel.position(width/2 + 20, 120);
+  styleLabel(secondsLabel);
   
   let separator = createElement('h2', ':');
-  separator.position(width/2 - 5, height/2 - 40);
-  separator.style('color', colors.light);
-  separator.style('font-family', 'Arial, sans-serif');
-  separator.style('margin', '0');
+  separator.position(width/2 - 5, 150);
+  styleLabel(separator);
   
   // Create set button
   buttonSet = createButton('SET TIMER');
-  buttonSet.position(width/2 - 60, height/2 + 30);
+  buttonSet.position(width/2 - 60, 220);
   buttonSet.size(120, 45);
   buttonSet.mousePressed(setTimer);
   styleButton(buttonSet, colors.accent);
   
-  // Create control buttons
+  // Create timer control buttons
   buttonStart = createButton('START');
-  buttonStart.position(width/2 - 130, height/2 + 80);
+  buttonStart.position(width/2 - 130, 220);
   buttonStart.size(120, 45);
   buttonStart.mousePressed(toggleTimer);
   styleButton(buttonStart, colors.green);
   
   buttonReset = createButton('RESET');
-  buttonReset.position(width/2 + 10, height/2 + 80);
+  buttonReset.position(width/2 + 10, 220);
   buttonReset.size(120, 45);
   buttonReset.mousePressed(resetTimer);
-  styleButton(buttonReset, colors.primary);
+  styleButton(buttonReset, colors.accent);
   
-  // Create progress bar
-  progressBar = new ProgressBar();
+  // Create scoring buttons for Fencer 1
+  let buttonPlus1 = createButton('+');
+  buttonPlus1.position(width/4 - 30, 480);
+  buttonPlus1.size(60, 60);
+  buttonPlus1.mousePressed(() => changeScore(1, 1));
+  styleButton(buttonPlus1, colors.accent);
+  buttonPlus1.style('font-size', '30px');
+  
+  let buttonMinus1 = createButton('-');
+  buttonMinus1.position(width/4 + 50, 480);
+  buttonMinus1.size(60, 60);
+  buttonMinus1.mousePressed(() => changeScore(1, -1));
+  styleButton(buttonMinus1, colors.accent);
+  buttonMinus1.style('font-size', '30px');
+  
+  // Create scoring buttons for Fencer 2
+  let buttonMinus2 = createButton('-');
+  buttonMinus2.position(3*width/4 - 110, 480);
+  buttonMinus2.size(60, 60);
+  buttonMinus2.mousePressed(() => changeScore(2, -1));
+  styleButton(buttonMinus2, colors.accent);
+  buttonMinus2.style('font-size', '30px');
+  
+  let buttonPlus2 = createButton('+');
+  buttonPlus2.position(3*width/4 - 30, 480);
+  buttonPlus2.size(60, 60);
+  buttonPlus2.mousePressed(() => changeScore(2, 1));
+  styleButton(buttonPlus2, colors.accent);
+  buttonPlus2.style('font-size', '30px');
   
   // Set visibility based on state
   updateUIVisibility();
@@ -91,64 +113,66 @@ function draw() {
     if (timeRemaining <= 0) {
       timeRemaining = 0;
       isRunning = false;
+      buttonStart.html('START');
+      
+      // Optional: Add a buzzer or end-of-bout indication here
     }
   }
+  
+  // Display fencer labels
+  textSize(48);
+  fill(colors.textColor);
+  text("FENCER1", width/4, 50);
+  text("FENCER2", 3*width/4, 50);
+  
+  // Display scores
+  textSize(120);
+  text(scoreFencer1, width/4, 300);
+  text(scoreFencer2, 3*width/4, 300);
   
   // Display timer
   displayTimer();
   
-  // Display progress bar in running state
-  if (timerState === "running") {
-    progressBar.update(timeRemaining / totalTime);
-    progressBar.display();
-  }
+  // Draw line separating timer and scoring sections
+  stroke(colors.textColor);
+  strokeWeight(2);
+  line(0, 400, width, 400);
+  noStroke();
 }
 
 function displayTimer() {
+  // Format time as MM:SS
+  let minutes = floor(timeRemaining / 60);
+  let seconds = floor(timeRemaining % 60);
+  
+  // Add leading zeros
+  let timeString = nf(minutes, 2) + ":" + nf(seconds, 2);
+  
+  // Get timer color based on remaining time
+  let timerColor = colors.textColor;
+  if (timeRemaining <= 10) {
+    timerColor = colors.red;
+  }
+  
+  // Draw timer display based on state
   if (timerState === "running") {
-    // Format time as MM:SS
-    let minutes = floor(timeRemaining / 60);
-    let seconds = floor(timeRemaining % 60);
-    
-    // Add leading zeros
-    let timeString = nf(minutes, 2) + ":" + nf(seconds, 2);
-    
-    // Get timer color based on remaining time
-    let timerColor = colors.green;
-    if (timeRemaining <= 10) {
-      timerColor = colors.red;
-    } else if (timeRemaining <= 30) {
-      timerColor = colors.yellow;
-    }
-    
-    // Draw timer display
-    textSize(72);
+    textSize(100);
     fill(timerColor);
-    text(timeString, width/2, height/2);
-    
-    // Show status
-    fill(colors.light);
-    textSize(18);
-    text(isRunning ? "RUNNING" : (timeRemaining <= 0 ? "TIME'S UP!" : "PAUSED"), width/2, height/2 - 80);
-    
-    // Update button text based on timer state
-    if (isRunning) {
-      buttonStart.html('PAUSE');
-      styleButton(buttonStart, colors.yellow);
-    } else {
-      buttonStart.html('START');
-      styleButton(buttonStart, colors.green);
-    }
+    text(timeString, width/2, 120);
+  } 
+  
+//   else {
+//     // Show title in setup mode
+//     //fill(colors.textColor);
+//     //textSize(36);
+//     //text("BOUT TIMER", width/2, 50);
+//   }
+  
+  // Update button text based on timer state
+  if (isRunning) {
+    buttonStart.html('PAUSE');
   } else {
-    // Show title in setup mode
-    fill(colors.accent);
-    textSize(28);
-    text("COUNTDOWN TIMER", width/2, height/2 - 120);
-    
-    // Show instruction if in setup mode
-    fill(colors.light);
-    textSize(16);
-    text("Enter time and press 'SET TIMER'", width/2, height/2 + 100);
+    buttonStart.html('START');
   }
 }
 
@@ -188,12 +212,10 @@ function toggleTimer() {
     // Start timer
     startTime = millis() - ((totalTime - timeRemaining) * 1000);
     isRunning = true;
-    styleButton(buttonStart, colors.yellow);
     buttonStart.html('PAUSE');
   } else {
     // Pause timer
     isRunning = false;
-    styleButton(buttonStart, colors.green);
     buttonStart.html('START');
   }
 }
@@ -215,6 +237,18 @@ function resetTimer() {
   inputSeconds.value(nf(seconds, 2));
 }
 
+function changeScore(fencer, change) {
+  if (fencer === 1) {
+    scoreFencer1 += change;
+    // Ensure score doesn't go below 0
+    scoreFencer1 = max(0, scoreFencer1);
+  } else {
+    scoreFencer2 += change;
+    // Ensure score doesn't go below 0
+    scoreFencer2 = max(0, scoreFencer2);
+  }
+}
+
 function updateUIVisibility() {
   // Show/hide elements based on state
   if (timerState === "setup") {
@@ -233,8 +267,8 @@ function updateUIVisibility() {
 }
 
 function styleInput(element) {
-  element.style('background-color', colors.primary);
-  element.style('color', colors.white);
+  element.style('background-color', colors.accent);
+  element.style('color', colors.textColor);
   element.style('border', 'none');
   element.style('border-radius', '5px');
   element.style('padding', '8px');
@@ -245,81 +279,37 @@ function styleInput(element) {
 
 function styleButton(button, bgColor) {
   button.style('background-color', bgColor);
-  button.style('color', colors.white);
-  button.style('border', 'none');
+  button.style('color', colors.textColor);
+  button.style('border', '2px solid white');
   button.style('border-radius', '5px');
   button.style('padding', '10px');
   button.style('font-size', '16px');
   button.style('font-weight', 'bold');
   button.style('cursor', 'pointer');
   button.style('font-family', 'Arial, sans-serif');
-  button.style('box-shadow', '0 4px 6px rgba(0, 0, 0, 0.1)');
-  button.style('transition', 'all 0.2s ease');
   
   // Add hover effect
   button.mouseOver(function() {
-    this.style('background-color', colorLuminance(bgColor, 0.1));
-    this.style('transform', 'translateY(-2px)');
-    this.style('box-shadow', '0 6px 8px rgba(0, 0, 0, 0.15)');
+    this.style('background-color', brightenColor(bgColor));
   });
   
   button.mouseOut(function() {
     this.style('background-color', bgColor);
-    this.style('transform', 'translateY(0)');
-    this.style('box-shadow', '0 4px 6px rgba(0, 0, 0, 0.1)');
   });
 }
 
-// Helper function to lighten/darken colors
-function colorLuminance(hex, lum) {
-  // Validate hex string
-  hex = String(hex).replace(/[^0-9a-f]/gi, '');
-  if (hex.length < 6) {
-    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-  }
-  lum = lum || 0;
-  
-  // Convert to decimal and change luminosity
-  let rgb = "#", c, i;
-  for (i = 0; i < 3; i++) {
-    c = parseInt(hex.substr(i * 2, 2), 16);
-    c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-    rgb += ("00" + c).substr(c.length);
-  }
-  
-  return rgb;
+function styleLabel(element) {
+  element.style('color', colors.textColor);
+  element.style('font-family', 'Arial, sans-serif');
+  element.style('margin', '0');
 }
 
-// Progress bar class
-class ProgressBar {
-  constructor() {
-    this.x = width * 0.1;
-    this.y = height * 0.75;
-    this.w = width * 0.8;
-    this.h = 15;
-    this.progress = 1.0;
-  }
-  
-  update(progress) {
-    this.progress = progress;
-  }
-  
-  display() {
-    // Background of progress bar
-    noStroke();
-    fill(colors.primary);
-    rect(this.x, this.y, this.w, this.h, this.h/2);
-    
-    // Get color based on progress
-    let barColor = colors.green;
-    if (this.progress <= 0.3) {
-      barColor = colors.red;
-    } else if (this.progress <= 0.6) {
-      barColor = colors.yellow;
-    }
-    
-    // Foreground of progress bar
-    fill(barColor);
-    rect(this.x, this.y, this.w * this.progress, this.h, this.h/2);
-  }
+// Helper function to brighten colors for hover effects
+function brightenColor(hexColor) {
+  // Simple brightening by adding white
+  return color(
+    min(red(color(hexColor)) + 40, 255),
+    min(green(color(hexColor)) + 40, 255),
+    min(blue(color(hexColor)) + 40, 255)
+  );
 }
